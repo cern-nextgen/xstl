@@ -5,6 +5,7 @@
 #include <cuda_runtime.h>
 
 #include <memory>
+#include <type_traits>
 
 namespace xstd::cuda {
 
@@ -20,7 +21,15 @@ namespace xstd::cuda {
   };
 
   template <typename T>
-  using device_unique = std::unique_ptr<T, Deleter>;
+  class device_unique {
+  private:
+    std::unique_ptr<T, Deleter> m_data;
+
+  public:
+    explicit device_unique(std::remove_extent_t<T>* data, Deleter deleter)
+        : m_data{data, deleter} {}
+    auto* data() const { return m_data.get(); }
+  };
 
   namespace detail {
 
@@ -54,9 +63,10 @@ namespace xstd::cuda {
     static_assert(std::is_trivially_constructible<element_type>::value,
                   "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
-    T* buf;
+    void* buf;
     cudaMalloc(&buf, sizeof(element_type) * size);
-    return typename detail::make_device_selector_t<T>{buf, Deleter{dev}};
+    return typename detail::make_device_selector_t<T>{reinterpret_cast<element_type*>(buf),
+                                                      Deleter{dev}};
   }
 
   template <typename T>
@@ -75,9 +85,10 @@ namespace xstd::cuda {
     static_assert(std::is_trivially_constructible<element_type>::value,
                   "Allocating with non-trivial constructor on the device memory is not supported");
     auto dev = current_device();
-    T* buf;
+    void* buf;
     cudaMallocAsync(&buf, sizeof(element_type) * size, stream);
-    return typename detail::make_device_selector_t<T>{buf, Deleter{dev}};
+    return typename detail::make_device_selector_t<T>{reinterpret_cast<element_type*>(buf),
+                                                      Deleter{dev}};
   }
 
 }  // namespace xstd::cuda
