@@ -1,8 +1,9 @@
 
 #include "xstl/xstl.hpp"
-#include <benchmark/benchmark.h>
 #include <algorithm>
+#include <benchmark/benchmark.h>
 #include <cstdint>
+#include <cuda_runtime.h>
 #include <ranges>
 
 static void BM_BuildBinaryAssociatorCUDA(benchmark::State& state) {
@@ -42,13 +43,13 @@ static void BM_BuildBinaryAssociatorCUDAStreamed(benchmark::State& state) {
     cudaStreamCreate(&stream);
     auto d_keys = xstd::cuda::make_device_unique<std::int32_t[]>(nvalues, stream);
     auto d_values = xstd::cuda::make_device_unique<std::int32_t[]>(nvalues, stream);
-    cudaMemcpy(
+    cudaMemcpyAsync(
         d_keys.data(), keys.data(), nvalues * sizeof(std::int32_t), cudaMemcpyHostToDevice, stream);
-    cudaMemcpy(d_values.data(),
-               values.data(),
-               nvalues * sizeof(std::int32_t),
-               cudaMemcpyHostToDevice,
-               stream);
+    cudaMemcpyAsync(d_values.data(),
+                    values.data(),
+                    nvalues * sizeof(std::int32_t),
+                    cudaMemcpyHostToDevice,
+                    stream);
     state.ResumeTiming();
 
     xstd::cuda::association_map<std::int32_t> associator(nvalues, 2u, stream);

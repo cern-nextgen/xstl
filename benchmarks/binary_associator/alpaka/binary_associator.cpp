@@ -1,6 +1,8 @@
 
 #include "xstl/xstl.hpp"
 #include <benchmark/benchmark.h>
+#include <cstddef>
+#include <cstdint>
 #include <algorithm>
 #include <alpaka/alpaka.hpp>
 #include <cstdint>
@@ -13,23 +15,23 @@ static void BM_BuildBinaryAssociatorAlpaka(benchmark::State& state) {
     auto device = alpaka::getDevByIdx(xstd::alpaka::Platform{}, 0u);
     auto queue = xstd::alpaka::Queue(device);
 
-    const auto nvalues = state.range(0);
+    const auto nvalues = static_cast<std::size_t>(state.range(0));
     auto h_values =
-        alpaka::allocMappedBuf<std::int32_t, std::uint32_t>(host, alpaka::PlatformCpu{}, nvalues);
+        alpaka::allocMappedBuf<std::int32_t, std::size_t>(host, alpaka::PlatformCpu{}, nvalues);
     std::ranges::copy(std::views::iota(0) | std::views::take(nvalues), h_values.data());
     auto h_keys =
-        alpaka::allocMappedBuf<std::int32_t, std::uint32_t>(host, alpaka::PlatformCpu{}, nvalues);
+        alpaka::allocMappedBuf<std::int32_t, std::size_t>(host, alpaka::PlatformCpu{}, nvalues);
     std::ranges::transform(std::views::iota(0) | std::views::take(nvalues),
                            h_keys.data(),
                            [](auto x) -> std::int32_t { return x % 2 == 0; });
-    auto d_keys = alpaka::allocAsyncBuf<std::int32_t, std::uint32_t>(queue, nvalues);
-    auto d_values = alpaka::allocAsyncBuf<std::int32_t, std::uint32_t>(queue, nvalues);
+    auto d_keys = alpaka::allocAsyncBuf<std::int32_t, std::size_t>(queue, nvalues);
+    auto d_values = alpaka::allocAsyncBuf<std::int32_t, std::size_t>(queue, nvalues);
     alpaka::memcpy(queue, d_keys, h_keys);
     alpaka::memcpy(queue, d_values, h_values);
     state.ResumeTiming();
 
     xstd::alpaka::association_map<std::int32_t> associator(nvalues, 2u, queue);
-    associator.fill(queue, d_keys, d_values);
+    associator.fill(queue, std::span{d_keys.data(), nvalues}, std::span{d_values.data(), nvalues});
     alpaka::wait(queue);
   }
 }

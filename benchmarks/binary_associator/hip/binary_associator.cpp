@@ -1,8 +1,9 @@
 
 #include "xstl/xstl.hpp"
-#include <benchmark/benchmark.h>
 #include <algorithm>
+#include <benchmark/benchmark.h>
 #include <cstdint>
+#include <hip_runtime.h>
 #include <ranges>
 
 static void BM_BuildBinaryAssociatorHIP(benchmark::State& state) {
@@ -42,13 +43,13 @@ static void BM_BuildBinaryAssociatorHIPStreamed(benchmark::State& state) {
     hipStreamCreate(&stream);
     auto d_keys = xstd::hip::make_device_unique<std::int32_t[]>(nvalues, stream);
     auto d_values = xstd::hip::make_device_unique<std::int32_t[]>(nvalues, stream);
-    hipMemcpy(
+    hipMemcpyAsync(
         d_keys.data(), keys.data(), nvalues * sizeof(std::int32_t), hipMemcpyHostToDevice, stream);
-    hipMemcpy(d_values.data(),
-              values.data(),
-              nvalues * sizeof(std::int32_t),
-              hipMemcpyHostToDevice,
-              stream);
+    hipMemcpyAsync(d_values.data(),
+                   values.data(),
+                   nvalues * sizeof(std::int32_t),
+                   hipMemcpyHostToDevice,
+                   stream);
     state.ResumeTiming();
 
     xstd::hip::association_map<std::int32_t> associator(nvalues, 2u, stream);
