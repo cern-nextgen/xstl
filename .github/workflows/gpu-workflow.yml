@@ -14,3 +14,10 @@ jobs:
       - name: nvidia-smi
         run: |
           nvidia-smi
+
+      - name: Compile and run CUDA tests
+        working-directory: ${{ github.workspace }}/tests
+        run: |
+          cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build/debug --parallel
+          ctest --test-dir build/debug --output-on-failure
