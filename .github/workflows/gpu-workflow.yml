@@ -8,6 +8,8 @@ jobs:
     runs-on: cern-nextgen-h100 
     container: registry.cern.ch/ngt/lxplus-like:9 
     steps:
+      - uses: actions/checkout@v4
+
       - name: cvmfs
         run: |
           ls /cvmfs/atlas.cern.ch/repo
