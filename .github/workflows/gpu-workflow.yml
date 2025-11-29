@@ -5,10 +5,10 @@ on:
 
 jobs:
   gpu-h100:
-    runs-on: cms-patatrack-h100
+    runs-on: cern-nextgen-h100 
     container: registry.cern.ch/ngt/lxplus-like:9 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: cvmfs
         run: |
