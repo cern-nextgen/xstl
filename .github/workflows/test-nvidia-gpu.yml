@@ -1,15 +1,12 @@
 name: Run tests on NVIDIA GPU
 
-on: pull_request
+on:
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   gpu-tests:
-    strategy:
-      matrix:
-        runner:
-          - cern-nextgen-h100
-          - cern-nextgen-l40s
-    runs-on: ${{ matrix.runner }}
+    runs-on: cern-nextgen-h100 
     container: registry.cern.ch/ngt/lxplus-like:9
 
     steps:
@@ -25,3 +22,10 @@ jobs:
           cmake -B build/release -DCMAKE_BUILD_TYPE=Release
           cmake --build build/release --parallel
           ctest --test-dir build/debug --output-on-failure
+
+    # strategy:
+    #   matrix:
+    #     runner:
+    #       - cern-nextgen-h100 
+    #       - cern-nextgen-l40s
+    # runs-on: ${{ matrix.runner }}
