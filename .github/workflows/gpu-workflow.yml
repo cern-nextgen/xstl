@@ -12,7 +12,8 @@ jobs:
 
       - name: Install boost
         run: |
-          dnf install -y boost-devel
+          sudo dnf install boost boost-devel -y
+
 
       - name: cvmfs
         run: |
