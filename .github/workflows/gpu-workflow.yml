@@ -14,7 +14,7 @@ jobs:
         run: |
           dnf clean all
           dnf makecache
-          dnf install boost boost-devel -y
+          dnf install boost-devel.x86_64 -y
 
 
       - name: cvmfs
