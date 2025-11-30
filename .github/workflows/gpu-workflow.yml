@@ -12,6 +12,8 @@ jobs:
 
       - name: Install boost
         run: |
+          dnf clean all
+          dnf makecache
           dnf install boost boost-devel -y
 
 
