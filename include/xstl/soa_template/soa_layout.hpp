@@ -716,7 +716,7 @@ _SWITCH_ON_TYPE(VALUE_TYPE,                                                     
   SOA_HOST_DEVICE SOA_INLINE                                                                                           \
   const auto BOOST_PP_CAT(parametersOf_, NAME)() const {                                                               \
     return CAST(parent_.BOOST_PP_CAT(NAME, Parameters_));                                                              \
-  };
+  }
 // clang-format on
 
 // DATA should be a function used to convert
@@ -738,7 +738,7 @@ _SWITCH_ON_TYPE(VALUE_TYPE,                                                     
 #define _DECLARE_VIEW_MEMBER_CONST_POINTERS_IMPL(VALUE_TYPE, CPP_TYPE, NAME, ARGS) \
   SOA_HOST_DEVICE SOA_INLINE auto const* BOOST_PP_CAT(addressOf_, NAME)() const {  \
     return parent_.BOOST_PP_CAT(NAME, Parameters_).addr_;                          \
-  };
+  }
 
 #define _DECLARE_VIEW_MEMBER_CONST_POINTERS(R, DATA, TYPE_NAME)                             \
   BOOST_PP_IF(BOOST_PP_GREATER(BOOST_PP_TUPLE_ELEM(0, TYPE_NAME), _VALUE_LAST_COLUMN_TYPE), \
@@ -1054,7 +1054,7 @@ _SWITCH_ON_TYPE(VALUE_TYPE,                                                     
 #define _DECLARE_VIEW_MEMBER_POINTERS_IMPL(VALUE_TYPE, CPP_TYPE, NAME, ARGS)                                         \
   SOA_HOST_DEVICE SOA_INLINE auto* BOOST_PP_CAT(addressOf_, NAME)() {                                                \
     return BOOST_PP_CAT(parametersOf_, NAME)().addr_;                                                                \
-  };
+  }
 // clang-format on
 
 #define _DECLARE_VIEW_MEMBER_POINTERS(R, DATA, TYPE_NAME)                                   \
