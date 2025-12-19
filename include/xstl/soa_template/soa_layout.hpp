@@ -1,5 +1,10 @@
-#ifndef DataFormats_SoATemplate_interface_SoALayout_h
-#define DataFormats_SoATemplate_interface_SoALayout_h
+// SPDX-License-Identifier: MPL-2.0
+
+/// @file soa_layout.hpp
+/// @brief Structure-of-Arrays layout generation macros and utilities
+/// @author Leonardo Beltrame, Eric Cano, Andrea Bocci, Markus Holzer, Simone Balducci
+
+#pragma once
 
 /*
  * Structure-of-Arrays template with "columns" and "scalars", defined through preprocessor macros,
@@ -143,18 +148,18 @@ namespace cms::soa {
           parent_.BOOST_PP_CAT(NAME, Stride_));                                                                        \
       }                                                                                                                \
       constexpr static cms::soa::SoAColumnType BOOST_PP_CAT(ColumnTypeOf_, NAME) = cms::soa::SoAColumnType::eigen;     \
-  )																													                                                           \
+  )																													   \
   SOA_HOST_DEVICE SOA_INLINE                                                                                       	   \
-  auto* BOOST_PP_CAT(addressOf_, NAME)() {                                                                     		     \
-	return parent_.metadata().BOOST_PP_CAT(parametersOf_, NAME)().addr_;                                           	     \
+  auto* BOOST_PP_CAT(addressOf_, NAME)() {                                                                     		   \
+	return parent_.metadata().BOOST_PP_CAT(parametersOf_, NAME)().addr_;                                           	   \
   }                                                                                                               	   \
   SOA_HOST_DEVICE SOA_INLINE                                                                                       	   \
-  const auto* BOOST_PP_CAT(addressOf_, NAME)() const {                                                         		     \
-	return parent_.metadata().BOOST_PP_CAT(parametersOf_, NAME)().addr_;                                           	     \
-  } 																												                                                           \
+  const auto* BOOST_PP_CAT(addressOf_, NAME)() const {                                                         		   \
+	return parent_.metadata().BOOST_PP_CAT(parametersOf_, NAME)().addr_;                                           	   \
+  } 																												   \
   SOA_HOST_DEVICE SOA_INLINE byte_size_type BOOST_PP_CAT(NAME, Pitch()) const {                                        \
-	return cms::soa::detail::computePitch(parent_.metadata().BOOST_PP_CAT(parametersOf_, NAME)(),					               \
-						ParentClass::alignment, parent_.elements_);													                                       \
+	return cms::soa::detail::computePitch(parent_.metadata().BOOST_PP_CAT(parametersOf_, NAME)(),					   \
+						ParentClass::alignment, parent_.elements_);													   \
   }
 // clang-format on
 
@@ -1214,10 +1219,10 @@ _SWITCH_ON_TYPE(VALUE_TYPE,                                                     
       /* Scalar (empty) */                                                                                           \
       ,                                                                                                              \
       /* Column */                                                                                                   \
-      NAME() = _soa_impl_value.NAME();                                                                                 \
+      NAME() = _soa_impl_value.NAME();                                                                               \
       ,                                                                                                              \
       /* Eigen column */                                                                                             \
-      NAME() = _soa_impl_value.NAME();                                                                                 \
+      NAME() = _soa_impl_value.NAME();                                                                               \
 )
 // clang-format on
 
@@ -2071,5 +2076,3 @@ _SWITCH_ON_TYPE(VALUE_TYPE,                                                     
     /* This will be handled later as we handle the integration of the view as a subclass of the layout.             */ \
   };
 // clang-format on
-
-#endif  // DataFormats_SoATemplate_interface_SoALayout_h

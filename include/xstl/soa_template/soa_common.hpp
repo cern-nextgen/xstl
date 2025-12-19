@@ -1,5 +1,10 @@
-#ifndef DataFormats_SoATemplate_interface_SoACommon_h
-#define DataFormats_SoATemplate_interface_SoACommon_h
+// SPDX-License-Identifier: MPL-2.0
+
+/// @file soa_common.hpp
+/// @brief Common definitions and utilities for SoA class generators
+/// @author Leonardo Beltrame, Eric Cano, Andrea Bocci, Markus Holzer, Simone Balducci
+
+#pragma once
 
 /*
  * Definitions of SoA common parameters for SoA class generators
@@ -45,7 +50,9 @@
   }
 #else
 #define SOA_THROW_OUT_OF_RANGE(A) \
-  { throw std::out_of_range(A); }
+  {                               \
+    throw std::out_of_range(A);   \
+  }
 #endif
 
 /* declare "scalars" (one value shared across the whole SoA) and "columns" (one value per element) */
@@ -1123,5 +1130,3 @@ namespace cms::soa::detail {
   }
 
 }  // namespace cms::soa::detail
-
-#endif  // DataFormats_SoATemplate_interface_SoACommon_h
