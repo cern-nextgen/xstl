@@ -716,7 +716,7 @@ _SWITCH_ON_TYPE(VALUE_TYPE,                                                     
   SOA_HOST_DEVICE SOA_INLINE                                                                                           \
   const auto BOOST_PP_CAT(parametersOf_, NAME)() const {                                                               \
     return CAST(parent_.BOOST_PP_CAT(NAME, Parameters_));                                                              \
-  };
+  }
 // clang-format on
 
 // DATA should be a function used to convert
