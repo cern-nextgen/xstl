@@ -5,3 +5,4 @@
 #pragma once
 
 #include "xstl/association_map/association_map.hpp"
+#include "xstl/soa_template/soa_layout.hpp"
