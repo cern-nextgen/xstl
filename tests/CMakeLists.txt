@@ -32,3 +32,4 @@ endif()
 enable_testing()
 
 add_subdirectory(association_map)
+add_subdirectory(soa_template)
