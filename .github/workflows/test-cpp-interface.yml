@@ -41,4 +41,3 @@ jobs:
         cmake -B build/release -DCMAKE_BUILD_TYPE=Release
         cmake --build build/release
         ctest --test-dir build/release --output-on-failure
-
