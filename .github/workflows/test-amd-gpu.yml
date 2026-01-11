@@ -1,0 +1,27 @@
+name: Run tests on AMD GPUs
+
+on: pull_request
+
+jobs:
+  amd-gpu-tests:
+    strategy:
+      matrix:
+        runner:
+          - cern-nextgen-w7900
+          - cern-nextgen-mi300x
+    runs-on: ${{ matrix.runner }}
+    container: registry.cern.ch/ngt/lxplus-like:9
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile and run HIP tests
+        working-directory: ${{ github.workspace }}/tests
+        run: |
+          cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build/debug --parallel
+          ctest --test-dir build/debug --output-on-failure
+
+          cmake -B build/release -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/release --parallel
+          ctest --test-dir build/debug --output-on-failure

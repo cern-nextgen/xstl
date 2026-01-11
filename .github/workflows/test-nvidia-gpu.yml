@@ -1,0 +1,31 @@
+name: Run tests on NVIDIA GPU
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  gpu-tests:
+    runs-on: cern-nextgen-h100 
+    container: registry.cern.ch/ngt/lxplus-like:9
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile and run CUDA tests
+        working-directory: ${{ github.workspace }}/tests
+        run: |
+          cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build/debug --parallel
+          ctest --test-dir build/debug --output-on-failure
+
+          cmake -B build/release -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/release --parallel
+          ctest --test-dir build/debug --output-on-failure
+
+    # strategy:
+    #   matrix:
+    #     runner:
+    #       - cern-nextgen-h100 
+    #       - cern-nextgen-l40s
+    # runs-on: ${{ matrix.runner }}
