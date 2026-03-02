@@ -9,7 +9,6 @@
 #include "xstl/association_map/cuda/detail/kernels.cuh"
 #include <span>
 #include <thrust/execution_policy.h>
-#include <thrust/async/scan.h>
 #include <thrust/scan.h>
 
 namespace xstd::cuda {
@@ -55,10 +54,10 @@ namespace xstd::cuda {
 
     auto temporary_keys = make_device_unique<key_type[]>(m_extents.keys + 1, stream);
     cudaMemsetAsync(temporary_keys.data(), 0, sizeof(key_type) * (m_extents.keys + 1), stream);
-    thrust::async::inclusive_scan(thrust::device.on(stream),
-                                  accumulator.data(),
-                                  accumulator.data() + m_extents.keys,
-                                  temporary_keys.data() + 1);
+    thrust::inclusive_scan(thrust::cuda::par_nosync.on(stream),
+                           accumulator.data(),
+                           accumulator.data() + m_extents.keys,
+                           temporary_keys.data() + 1);
     cudaMemcpyAsync(m_data.keys.data(),
                     temporary_keys.data(),
                     sizeof(key_type) * (m_extents.keys + 1),
